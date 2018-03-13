@@ -18,6 +18,7 @@ What we are doing here is mostly collecting useful snippets from all over the in
     - [Force non-www in a Generic Way](#force-non-www-in-a-generic-way)
     - [Force HTTPS](#force-https)
     - [Force HTTPS Behind a Proxy](#force-https-behind-a-proxy)
+    - [Force HTTPS on Heart Internet](#force-https-on-heart-internet)
     - [Force Trailing Slash](#force-trailing-slash)
     - [Remove Trailing Slash](#remove-trailing-slash)
     - [Redirect a Single Page](#redirect-a-single-page)
@@ -110,6 +111,22 @@ Useful if you have a proxy in front of your server performing TLS termination.
 ``` apacheconf
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+```
+
+### Force HTTPS on Heart Internet
+Heart Internet has different parameters for htaccess files.
+``` apacheconf
+RewriteEngine on
+RewriteCond %{ENV:HTTPS} !on
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
+
+# Note: It’s also recommended to enable HTTP Strict Transport Security (HSTS)
+# on your HTTPS website to help prevent man-in-the-middle attacks.
+# See https://developer.mozilla.org/en-US/docs/Web/Security/HTTP_strict_transport_security
+<IfModule mod_headers.c>
+    # Remove "includeSubDomains" if you don't want to enforce HSTS on all subdomains
+    Header always set Strict-Transport-Security "max-age=31536000;includeSubDomains"
+</IfModule>
 ```
 
 ### Force Trailing Slash
